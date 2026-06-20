@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Senz</title>
 <meta name="description" content="Hey, I'm Senz. I build websites and mess around with Lua scripts on the side.">
-<meta property="og:title" content="Senz">
+<meta property="og:title" content="Senz — Web Developer">
 <meta property="og:description" content="Hey, I'm Senz. I build websites and mess around with Lua scripts on the side.">
 <meta property="og:image" content="senz1.png">
 <meta property="og:type" content="website">
@@ -157,10 +157,30 @@ nav{
 }
 .lang-toggle button.active{background:var(--pink);color:var(--void);}
 
+/* ===== NAV TICKER (fills the empty desktop navbar gap) ===== */
+.nav-ticker{
+  flex:1;overflow:hidden;position:relative;margin:0 36px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+}
+.nav-ticker-track{
+  display:flex;gap:36px;white-space:nowrap;width:max-content;
+  animation:tickerScroll 22s linear infinite;
+  font-family:'Space Mono',monospace;font-size:0.72rem;
+  color:var(--lilac);letter-spacing:0.05em;
+}
+.nav-ticker-track span.item{display:inline-flex;align-items:center;gap:10px;}
+.nav-ticker-track .sep{color:var(--purple);}
+@keyframes tickerScroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+@media(max-width:1100px){.nav-ticker{display:none;}}
+
 /* ===== HERO ===== */
 .hero{
-  position:relative;min-height:92vh;
-  display:flex;align-items:center;padding:0 6%;overflow:hidden;
+  position:relative;min-height:auto;
+  display:flex;align-items:flex-start;padding:54px 6% 70px;overflow:hidden;
 }
 #heroCanvas{
   position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -318,6 +338,15 @@ nav{
 .dot.idle{background:#FAA61A;}
 .dot.dnd{background:#ED4245;}
 .dot.offline{background:#6b6478;}
+.id-card-badges{
+  display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;
+}
+.id-badge{
+  font-family:'Space Mono',monospace;font-size:0.68rem;
+  padding:5px 11px;border-radius:7px;
+  background:var(--plum-deep);color:var(--purple);
+  border:1px solid var(--line);letter-spacing:0.03em;
+}
 
 /* ===== SECTIONS ===== */
 section{padding:110px 6%;position:relative;z-index:2;}
@@ -645,6 +674,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
     <img class="logo-icon" src="senz1.png" alt="Senz icon">
     SENZ<span class="dot">.</span>
   </a>
+  <div class="nav-ticker">
+    <div class="nav-ticker-track" id="navTickerTrack"></div>
+  </div>
   <div class="nav-right">
     <ul class="nav-links">
       <li><a href="#about" data-i18n="nav.about">About</a></li>
@@ -679,7 +711,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
       </p>
       <div class="hero-actions">
         <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">About me</a>
-        <a href="#discord" class="btn btn-secondary" data-i18n="hero.btn2">what I'm up to</a>
+        <a href="#discord" class="btn btn-secondary" data-i18n="hero.btn2">What I'm up to</a>
       </div>
     </div>
 
@@ -696,6 +728,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
         <div class="id-card-row" id="idCardStatusRow">
           <span class="dot offline" id="idCardDot"></span>
           <span id="idCardStatusText" data-i18n="hero.cardLoading">Loading status…</span>
+        </div>
+        <div class="id-card-row" id="idCardActivityRow" style="display:none;margin-top:8px;">
+          <span id="idCardActivityText"></span>
+        </div>
+        <div class="id-card-badges">
+          <span class="id-badge">Frontend</span>
+          <span class="id-badge">Lua</span>
+          <span class="id-badge" data-i18n="hero.badgeOpen">Open to work</span>
         </div>
       </div>
     </a>
@@ -828,6 +868,7 @@ const translations = {
     "hero.sub":"สวัสดีครับ ผมเซนซ์ — developer ที่โฟกัสฝั่ง frontend สร้างโปรดักต์ที่ใช้งานง่ายและทำงานได้จริง",
     "hero.btn1":"เกี่ยวกับผม","hero.btn2":"สถานะตอนนี้",
     "hero.cardRole":"Full Stack Developer","hero.cardLoading":"กำลังโหลดสถานะ…",
+    "hero.badgeOpen":"เปิดรับงาน",
     "about.tag":"เกี่ยวกับผม",
     "about.p1":"ผมถนัดฝั่ง <strong>frontend</strong> เป็นหลัก ชอบเขียนเว็บที่ใช้งานง่ายและทำงานได้จริง ตอนนี้กำลังฝึกฝน <strong>backend</strong> เพิ่มเติมด้วย",
     "about.p2":"ว่าง ๆ ก็เขียน Lua ทำสคริปต์เกมเป็นงานอดิเรก",
@@ -840,16 +881,18 @@ const translations = {
     "discord.tag":"สถานะตอนนี้","discord.title":"กำลังทำอะไรอยู่",
     "discord.desc":"อัปเดตสด ๆ จากดิสคอร์ดของผม",
     "discord.loading":"กำลังโหลดสถานะ…","discord.add":"+ เพิ่มเพื่อน",
-    "footer.text":"© 2026 SENZ"
+    "footer.text":"© 2026 SENZ",
+    "ticker":["frontend developer","based in bangkok, th","กำลังสร้าง Task777 / LVLup / StreamVerse","lua scripter เวลาว่าง","open to freelance work"]
   },
   en: {
     "nav.about":"About","nav.discord":"Discord",
     "hero.eyebrow":"web dev, mostly frontend",
     "hero.line1":"SENZ",
     "hero.sub":"hey, I'm Senz. I make websites. still figuring out the backend stuff but getting there.",
-    "hero.btn1":"About me","hero.btn2":"what I'm up to",
+    "hero.btn1":"About me","hero.btn2":"What I'm up to",
     "hero.cardRole":"web dev / lua scripter",
     "hero.cardLoading":"loading…",
+    "hero.badgeOpen":"Open to work",
     "about.tag":"about",
     "about.p1":"I spend most of my time on the <strong>frontend</strong> — I like making things that look good and don't break. picking up <strong>backend</strong> stuff slowly on the side.",
     "about.p2":"when I'm bored I write Lua scripts for games. it's fun.",
@@ -862,7 +905,8 @@ const translations = {
     "discord.tag":"status","discord.title":"what I'm doing rn",
     "discord.desc":"pulled straight from my Discord.",
     "discord.loading":"loading…","discord.add":"+ add friend",
-    "footer.text":"© 2026 SENZ"
+    "footer.text":"© 2026 SENZ",
+    "ticker":["frontend developer","based in bangkok, th","building Task777 / LVLup / StreamVerse","lua scripter on the side","open to freelance work"]
   }
 };
 
@@ -884,8 +928,17 @@ function triggerLangGlitch(){
   }
 }
 
+function buildTicker(lang){
+  const track=document.getElementById('navTickerTrack');
+  if(!track) return;
+  const items=translations[lang].ticker||[];
+  const itemHtml=items.map(t=>`<span class="item">${t}<span class="sep">●</span></span>`).join('');
+  track.innerHTML=itemHtml+itemHtml; // duplicate for seamless loop
+}
+
 function setLang(lang){
   triggerLangGlitch();
+  buildTicker(lang);
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key=el.getAttribute('data-i18n');
     if(translations[lang][key]) el.innerHTML=translations[lang][key];
@@ -973,6 +1026,7 @@ function typePhrase(){
   }
 }
 typePhrase();
+buildTicker(document.getElementById('htmlRoot').dataset.lang||'en');
 
 // ===== SCROLL PROGRESS =====
 const progressBar=document.getElementById('scrollProgress');
@@ -1048,6 +1102,14 @@ async function loadDiscordStatus(){
     const act=(data.activities||[]).find(a=>a.type!==4);
     const actEl=document.getElementById('discordActivity');
     actEl.textContent=act?(act.details?`${act.name} — ${act.details}`:act.name):'';
+    const idActRow=document.getElementById('idCardActivityRow');
+    const idActText=document.getElementById('idCardActivityText');
+    if(act){
+      idActText.textContent=act.details?`${act.name} — ${act.details}`:act.name;
+      idActRow.style.display='flex';
+    } else {
+      idActRow.style.display='none';
+    }
     document.getElementById('discordCardLink').classList.remove('loading');
   }catch(e){
     const lang=document.getElementById('htmlRoot').dataset.lang||'th';
