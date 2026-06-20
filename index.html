@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Senz</title>
+<title>Senz — Web Developer</title>
+<meta name="description" content="Hey, I'm Senz. I build websites and mess around with Lua scripts on the side.">
+<meta property="og:title" content="Senz — Web Developer">
+<meta property="og:description" content="Hey, I'm Senz. I build websites and mess around with Lua scripts on the side.">
+<meta property="og:image" content="senz1.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Senz — Web Developer">
+<meta name="twitter:description" content="Hey, I'm Senz. I build websites and mess around with Lua scripts on the side.">
+<meta name="twitter:image" content="senz1.png">
 <link rel="icon" type="image/png" href="senz1.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -577,18 +586,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
     <div>
       <div class="hero-eyebrow">
         <span class="pulse-dot"></span>
-        <span data-i18n="hero.eyebrow">Up-and-coming web developer</span>
+        <span data-i18n="hero.eyebrow">web dev, mostly frontend</span>
       </div>
       <h1 class="display">
         <span class="glitch" id="glitchWord" data-text="SENZ"><span data-i18n="hero.line1">SENZ</span></span><br>
         <span class="grad typed-wrap"><span class="typed" id="typedEl"></span></span>
       </h1>
       <p class="hero-sub" data-i18n="hero.sub">
-        Hey, I'm Senz — a developer mostly focused on frontend. I build products that are simple and actually work.
+        hey, I'm Senz. I make websites. still figuring out the backend stuff but getting there.
       </p>
       <div class="hero-actions">
-        <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">About me</a>
-        <a href="#discord" class="btn btn-secondary" data-i18n="hero.btn2">Current status</a>
+        <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">about me</a>
+        <a href="#discord" class="btn btn-secondary" data-i18n="hero.btn2">what I'm up to</a>
       </div>
     </div>
 
@@ -598,7 +607,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
         <img class="id-card-avatar" id="idCardAvatar" src="senz.png" alt="Avatar">
         <div class="id-card-meta">
           <div class="id-card-name">Senz</div>
-          <div class="id-card-role" data-i18n="hero.cardRole">Full Stack Developer</div>
+          <div class="id-card-role" data-i18n="hero.cardRole">web dev / lua scripter</div>
 
         </div>
         <div class="id-card-divider"></div>
@@ -613,11 +622,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offse
 
 <section class="about" id="about">
   <div class="reveal">
-    <span class="section-tag" data-i18n="about.tag">About me</span>
+    <span class="section-tag" data-i18n="about.tag">about</span>
     <div class="about-grid">
       <div class="about-text">
-        <p data-i18n="about.p1">Mostly a <strong>frontend</strong> guy who likes building sites that are simple and actually work. Right now I'm also leveling up my <strong>backend</strong> skills.</p>
-        <p data-i18n="about.p2">In my spare time I write Lua scripts for games.</p>
+        <p data-i18n="about.p1">I spend most of my time on the <strong>frontend</strong> — I like making things that look good and don't break. picking up <strong>backend</strong> stuff slowly on the side.</p>
+        <p data-i18n="about.p2">when I'm bored I write Lua scripts for games. it's fun.</p>
       </div>
       <div class="stack-card">
         <h3 class="display" data-i18n="about.stackTitle">Tools I use</h3>
@@ -724,19 +733,20 @@ const translations = {
   },
   en: {
     "nav.about":"About","nav.discord":"Discord",
-    "hero.eyebrow":"Up-and-coming web developer",
+    "hero.eyebrow":"web dev, mostly frontend",
     "hero.line1":"SENZ",
-    "hero.sub":"Hey, I'm Senz — a developer mostly focused on frontend. I build products that are simple and actually work.",
-    "hero.btn1":"About me","hero.btn2":"Current status",
-    "hero.cardRole":"Full Stack Developer","hero.cardLoading":"Loading status…",
-    "about.tag":"About me",
-    "about.p1":"Mostly a <strong>frontend</strong> guy who likes building sites that are simple and actually work. Right now I'm also leveling up my <strong>backend</strong> skills.",
-    "about.p2":"In my spare time I write Lua scripts for games.",
-    "about.stackTitle":"Tools I use",
+    "hero.sub":"hey, I'm Senz. I make websites. still figuring out the backend stuff but getting there.",
+    "hero.btn1":"about me","hero.btn2":"what I'm up to",
+    "hero.cardRole":"web dev / lua scripter",
+    "hero.cardLoading":"loading…",
+    "about.tag":"about",
+    "about.p1":"I spend most of my time on the <strong>frontend</strong> — I like making things that look good and don't break. picking up <strong>backend</strong> stuff slowly on the side.",
+    "about.p2":"when I'm bored I write Lua scripts for games. it's fun.",
+    "about.stackTitle":"what I use",
     "about.frontend":"Frontend","about.backend":"Backend","about.scripting":"Scripting",
-    "discord.tag":"Right now","discord.title":"What I'm up to",
-    "discord.desc":"Live update straight from my Discord.",
-    "discord.loading":"Loading status…","discord.add":"+ Add Friend",
+    "discord.tag":"status","discord.title":"what I'm doing rn",
+    "discord.desc":"pulled straight from my Discord.",
+    "discord.loading":"loading…","discord.add":"+ add friend",
     "footer.text":"© 2026 SENZ"
   }
 };
