@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="th" id="htmlRoot" data-lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #15111E;
+    --plum-deep: #221733;
+    --plum-card: #1B1428;
+    --line: rgba(178, 102, 255, 0.16);
+    --line-soft: rgba(178, 102, 255, 0.09);
+    --purple: #A66BFF;
+    --purple-soft: #8C5CE0;
+    --pink: #F94F9E;
+    --pink-soft: #E04590;
+    --bone: #F3EEF7;
+    --lilac: #9A8AB8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.65;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 12% 15%, rgba(166,107,255,0.06), transparent 40%),
+      radial-gradient(circle at 88% 65%, rgba(249,79,158,0.05), transparent 45%);
+  }
+
+  .display {
+    font-family: 'Big Shoulders Display', sans-serif;
+    letter-spacing: -0.005em;
+  }
+
+  .mono { font-family: 'Space Mono', monospace; }
+
+  ::selection { background: var(--pink); color: var(--void); }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* ===== Scroll progress ===== */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    z-index: 300;
+    transition: width 0.12s ease-out;
+  }
+
+  /* ===== Cursor glow ===== */
+  .cursor-glow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 440px;
+    height: 440px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(166,107,255,0.16), rgba(249,79,158,0.08) 45%, transparent 72%);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    mix-blend-mode: screen;
+  }
+
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ===== Nav ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 6%;
+    background: rgba(21, 17, 30, 0.78);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+  }
+
+  .logo .dot { color: var(--pink); }
+
+  .nav-right { display: flex; align-items: center; gap: 30px; }
+
+  .nav-links { display: flex; gap: 30px; list-style: none; }
+
+  .nav-links a {
+    color: var(--lilac);
+    text-decoration: none;
+    font-size: 0.86rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--pink); }
+
+  .lang-toggle {
+    display: flex;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    overflow: hidden;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+  }
+
+  .lang-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--lilac);
+    padding: 6px 15px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .lang-toggle button.active { background: var(--pink); color: var(--void); }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    padding: 0 6%;
+    overflow: hidden;
+  }
+
+  #heroCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 60px;
+    align-items: center;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+  }
+
+  .hero-eyebrow .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pink);
+    box-shadow: 0 0 0 0 rgba(249,79,158,0.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(249,79,158,0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(249,79,158,0); }
+    100% { box-shadow: 0 0 0 0 rgba(249,79,158,0); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2.8rem, 6.2vw, 5rem);
+    font-weight: 700;
+    line-height: 1.02;
+    color: var(--bone);
+  }
+
+  .hero h1 .grad, .contact h2 .grad {
+    background: linear-gradient(90deg, var(--purple), var(--pink), var(--purple));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradShift 6s ease-in-out infinite;
+  }
+
+  @keyframes gradShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 1.05rem;
+    color: var(--lilac);
+    max-width: 50ch;
+  }
+
+  .hero-actions { margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    padding: 14px 28px;
+    text-decoration: none;
+    transition: box-shadow 0.18s ease, background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    color: var(--void);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--bone);
+    border: 1.5px solid var(--line);
+  }
+
+  .btn-secondary:hover { border-color: var(--purple); }
+
+  .btn:hover { box-shadow: 0 10px 26px rgba(166,107,255,0.22); }
+
+  /* ===== Hero visual: profile card ===== */
+  .id-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--plum-card);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+    will-change: transform;
+  }
+
+  .id-card:hover {
+    box-shadow: 0 36px 80px rgba(166,107,255,0.28);
+  }
+
+  .id-card-banner {
+    width: 100%;
+    aspect-ratio: 1730 / 691;
+    object-fit: cover;
+    display: block;
+  }
+
+  .id-card-body {
+    padding: 0 28px 28px;
+    position: relative;
+    margin-top: -44px;
+  }
+
+  .id-card-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 20px;
+    object-fit: cover;
+    border: 4px solid var(--plum-card);
+    display: block;
+    background: var(--plum-deep);
+  }
+
+  .id-card-meta { margin-top: 14px; }
+
+  .id-card-name {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--bone);
+  }
+
+  .id-card-role {
+    font-size: 0.9rem;
+    color: var(--lilac);
+    margin-top: 2px;
+  }
+
+  .id-card-divider {
+    height: 1px;
+    background: var(--line-soft);
+    margin: 18px 0;
+  }
+
+  .id-card-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--lilac);
+  }
+
+  .id-card-row .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lilac);
+    flex-shrink: 0;
+  }
+
+  .id-card-row .dot.online { background: #3BA55D; }
+  .id-card-row .dot.idle { background: #FAA61A; }
+  .id-card-row .dot.dnd { background: #ED4245; }
+  .id-card-row .dot.offline { background: #6b6478; }
+
+  /* ===== Section base ===== */
+  section { padding: 110px 6%; position: relative; z-index: 1; }
+
+  .section-head { margin-bottom: 52px; }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .section-head h2 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 700;
+    color: var(--bone);
+  }
+
+  .section-head p { color: var(--lilac); max-width: 46ch; font-size: 0.95rem; margin-top: 10px; }
+
+  /* ===== About ===== */
+  .about {
+    background: var(--plum-deep);
+    margin: 0 4%;
+    border-radius: 28px;
+    border: 1px solid var(--line-soft);
+  }
+
+  .about-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: start; }
+
+  .about-text p { font-size: 1.04rem; margin-bottom: 18px; color: var(--lilac); }
+  .about-text strong { color: var(--bone); font-weight: 600; }
+
+  .stack-card {
+    background: var(--void);
+    padding: 32px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+  }
+
+  .stack-card h3 {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 24px;
+    color: var(--bone);
+  }
+
+  .stack-group { margin-bottom: 20px; }
+  .stack-group:last-child { margin-bottom: 0; }
+
+  .stack-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--purple);
+    margin-bottom: 11px;
+  }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .pill {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 13px;
+    background: var(--plum-card);
+    color: var(--bone);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+
+  .pill:hover {
+    transform: translateY(-2px);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+
+  /* ===== Skill bars ===== */
+  .skill-bar-row { margin-bottom: 22px; }
+
+  .skill-bar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--bone);
+    margin-bottom: 9px;
+  }
+
+  .skill-bar-percent {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--purple);
+  }
+
+  .skill-bar-track {
+    height: 8px;
+    border-radius: 100px;
+    background: var(--plum-card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+  }
+
+  /* ===== Discord ===== */
+  .discord-card {
+    max-width: 520px;
+    background: var(--plum-card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 26px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .discord-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--purple);
+    box-shadow: 0 18px 40px rgba(166,107,255,0.18);
+  }
+
+  .discord-add-badge {
+    position: absolute;
+    top: -13px;
+    right: 20px;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    color: var(--void);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 100px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    opacity: 0;
+    transform: translateY(6px) scale(0.92);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    white-space: nowrap;
+  }
+
+  .discord-card:hover .discord-add-badge,
+  .discord-card:focus-visible .discord-add-badge {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .discord-avatar-wrap { position: relative; flex-shrink: 0; }
+
+  .discord-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: var(--plum-deep);
+  }
+
+  .status-dot {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    border: 3px solid var(--plum-card);
+    background: var(--lilac);
+  }
+
+  .status-dot.online { background: #3BA55D; }
+  .status-dot.idle { background: #FAA61A; }
+  .status-dot.dnd { background: #ED4245; }
+  .status-dot.offline { background: #6b6478; }
+
+  .discord-info { flex: 1; min-width: 0; }
+
+  .discord-name {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--bone);
+  }
+
+  .discord-status-text {
+    font-size: 0.82rem;
+    color: var(--lilac);
+    margin-top: 2px;
+  }
+
+  .discord-activity {
+    margin-top: 8px;
+    font-size: 0.84rem;
+    color: var(--purple);
+  }
+
+#discord {
+    padding-bottom: 140px;
+  }
+
+  /* ===== Contact ===== */
+  .contact {
+    background: linear-gradient(150deg, var(--plum-deep), var(--void));
+    margin: 0 4%;
+    text-align: center;
+    padding: 96px 6%;
+    border-radius: 28px;
+    border: 1px solid var(--line-soft);
+  }
+
+  .contact .section-tag { text-align: center; }
+
+  .contact h2 {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    color: var(--bone);
+    margin-bottom: 20px;
+    line-height: 1.05;
+  }
+
+  .contact p { color: var(--lilac); max-width: 44ch; margin: 0 auto 34px; font-size: 1rem; }
+
+  .contact-email {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--bone);
+    text-decoration: none;
+    border-bottom: 2px solid var(--pink);
+    padding-bottom: 6px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .contact-email:hover { color: var(--pink); }
+
+  .socials { margin-top: 40px; display: flex; justify-content: center; gap: 24px; }
+
+  .socials a {
+    color: var(--lilac);
+    font-size: 0.84rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .socials a:hover { color: var(--pink); }
+
+  footer {
+    text-align: center;
+    padding: 38px 6%;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--lilac);
+    opacity: 0.55;
+  }
+
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .discord-card { max-width: 100%; }
+  }
+
+  @media (max-width: 540px) {
+    section { padding: 76px 6%; }
+    .discord-card { flex-direction: column; text-align: center; }
+    .discord-add-badge { right: 50%; transform: translate(50%, 6px) scale(0.92); }
+    .discord-card:hover .discord-add-badge,
+    .discord-card:focus-visible .discord-add-badge { transform: translate(50%, 0) scale(1); }
+    .id-card-body { padding: 0 20px 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .pulse-dot { animation: none; }
+    .hero h1 .grad, .contact h2 .grad { animation: none; }
+    .cursor-glow, #heroCanvas { display: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="glow" style="width:560px; height:560px; background:var(--purple); opacity:0.16; top:-220px; right:-160px;"></div>
+<div class="glow" style="width:460px; height:460px; background:var(--pink); opacity:0.11; top:55vh; left:-200px;"></div>
+<div class="glow" style="width:420px; height:420px; background:var(--purple); opacity:0.12; top:135vh; right:-140px;"></div>
+
+<nav>
+  <div class="logo">SENZ<span class="dot">.</span></div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav.about">เกี่ยวกับ</a></li>
+      <li><a href="#discord" data-i18n="nav.discord">ดิสคอร์ด</a></li>
+    </ul>
+    <div class="lang-toggle">
+      <button id="btn-th" class="active" onclick="setLang('th')">TH</button>
+      <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="pulse-dot"></span>
+        <span data-i18n="hero.eyebrow">นักพัฒนาเว็บ</span>
+      </div>
+      <h1 class="display">
+        <span data-i18n="hero.line1">นักพัฒนาเว็บ</span> <span class="grad" data-i18n="hero.line2">Full Stack</span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">
+        สวัสดีครับผมเซนต์ Full-stack Developer ที่โฟกัสการสร้าง End-to-End Product ให้เสถียรและตอบโจทย์ผู้ใช้ที่สุด
+      </p>
+      <div class="hero-actions">
+        <a href="#about" class="btn btn-primary" data-i18n="hero.btn1">เกี่ยวกับผม</a>
+        <a href="#discord" class="btn btn-secondary" data-i18n="hero.btn2">สถานะตอนนี้</a>
+      </div>
+    </div>
+
+    <a class="id-card" id="idCardLink" href="https://discord.com/users/1005357318281641994" target="_blank" rel="noopener noreferrer" aria-label="Add Senz on Discord">
+      <img class="id-card-banner" id="idCardBanner" src="senz.png" alt="Banner">
+      <div class="id-card-body">
+        <img class="id-card-avatar" id="idCardAvatar" src="https://media.discordapp.net/attachments/1509300614494945520/1517853130501394542/file_000000000b5c71fa898e6a476402fbb8.png?format=webp&quality=lossless&width=920&height=920" alt="Avatar">
+        <div class="id-card-meta">
+          <div class="id-card-name">Senz</div>
+          <div class="id-card-role" data-i18n="hero.cardRole">Full Stack Developer</div>
+        </div>
+        <div class="id-card-divider"></div>
+        <div class="id-card-row" id="idCardStatusRow">
+          <span class="dot offline" id="idCardDot"></span>
+          <span id="idCardStatusText" data-i18n="hero.cardLoading">กำลังโหลดสถานะ…</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="reveal">
+    <span class="section-tag" data-i18n="about.tag">เกี่ยวกับผม</span>
+    <div class="about-grid">
+      <div class="about-text">
+        <p data-i18n="about.p1">
+          ผมถนัดฝั่ง <strong>frontend</strong> เป็นหลัก ชอบเขียนเว็บที่ใช้งานง่าย ตอนนี้กำลังฝึกฝน <strong>backend</strong> เพิ่มเติมด้วย
+        </p>
+        <p data-i18n="about.p2">
+          ว่าง ๆ ก็เขียน Lua ทำสคริปต์เกม
+        </p>
+      </div>
+      <div class="stack-card">
+        <h3 class="display" data-i18n="about.stackTitle">เครื่องมือที่ใช้</h3>
+
+        <div class="skill-bar-row" data-target="80">
+          <div class="skill-bar-head">
+            <span data-i18n="about.frontend">Frontend</span>
+            <span class="skill-bar-percent">0%</span>
+          </div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <div class="skill-bar-row" data-target="35">
+          <div class="skill-bar-head">
+            <span data-i18n="about.backend">Backend</span>
+            <span class="skill-bar-percent">0%</span>
+          </div>
+          <div class="skill-bar-track"><div class="skill-bar-fill"></div></div>
+        </div>
+
+        <div class="stack-group">
+          <div class="stack-group-label" data-i18n="about.scripting">Scripting</div>
+          <div class="pill-row">
+            <span class="pill">Lua</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="discord">
+  <div class="section-head reveal">
+    <span class="section-tag" data-i18n="discord.tag">สถานะตอนนี้</span>
+    <h2 class="display" data-i18n="discord.title">กำลังทำอะไรอยู่</h2>
+    <p data-i18n="discord.desc"></p>
+  </div>
+
+  <a class="discord-card reveal" id="discordCardLink" href="https://discord.com/users/1005357318281641994" target="_blank" rel="noopener noreferrer" aria-label="Add Senz on Discord">
+    <div class="discord-avatar-wrap">
+      <img class="discord-avatar" id="discordAvatar" src="https://media.discordapp.net/attachments/1509300614494945520/1517853130501394542/file_000000000b5c71fa898e6a476402fbb8.png?format=webp&quality=lossless&width=920&height=920" alt="Discord avatar">
+      <div class="status-dot offline" id="statusDot"></div>
+    </div>
+    <div class="discord-info">
+      <div class="discord-name" id="discordName">Senz</div>
+      <div class="discord-status-text" id="discordStatus" data-i18n="discord.loading">กำลังโหลดสถานะ…</div>
+      <div class="discord-activity" id="discordActivity"></div>
+    </div>
+    <div class="discord-add-badge" data-i18n="discord.add">+ เพิ่มเพื่อน</div>
+  </a>
+</section>
+
+
+
+<footer data-i18n="footer.text">© 2026 SENZ</footer>
+
+<script>
+  const translations = {
+    th: {
+      "nav.about": "เกี่ยวกับ",
+      "nav.discord": "ดิสคอร์ด",
+      "hero.eyebrow": "นักพัฒนาเว็บมือใหม่ไฟแรง",
+      "hero.line1": "นักพัฒนาเว็บ",
+      "hero.line2": "Full Stack",
+      "hero.sub": "สวัสดีครับ ผมเซนซ์ — นักพัฒนาที่โฟกัสฝั่ง frontend เป็นหลัก สร้างโปรดักต์ที่ใช้งานง่ายและทำงานได้จริง",
+      "hero.btn1": "เกี่ยวกับผม",
+      "hero.btn2": "สถานะตอนนี้",
+      "hero.cardRole": "Full Stack Developer",
+      "hero.cardLoading": "กำลังโหลดสถานะ…",
+      "about.tag": "เกี่ยวกับผม",
+      "about.p1": "ผมถนัดฝั่ง <strong>frontend</strong> เป็นหลัก ชอบเขียนเว็บที่ใช้งานง่ายและทำงานได้จริง ตอนนี้กำลังฝึกฝน <strong>backend</strong> เพิ่มเติมด้วย",
+      "about.p2": "ว่าง ๆ ก็เขียน Lua ทำสคริปต์เกมเป็นงานอดิเรก",
+      "about.stackTitle": "เครื่องมือที่ใช้",
+      "about.frontend": "Frontend",
+      "about.backend": "Backend",
+      "about.scripting": "Scripting",
+      "discord.tag": "สถานะตอนนี้",
+      "discord.title": "กำลังทำอะไรอยู่",
+      "discord.desc": "อัปเดตสด ๆ จากดิสคอร์ดของผม",
+      "discord.loading": "กำลังโหลดสถานะ…",
+      "discord.add": "+ เพิ่มเพื่อน",
+      "footer.text": "© 2026 SENZ"
+    },
+    en: {
+      "nav.about": "About",
+      "nav.discord": "Discord",
+      "hero.eyebrow": "Up-and-coming web developer",
+      "hero.line1": "Full Stack",
+      "hero.line2": "Developer",
+      "hero.sub": "Hey, I'm Senz — a developer mostly focused on frontend. I build products that are simple and actually work.",
+      "hero.btn1": "About me",
+      "hero.btn2": "Current status",
+      "hero.cardRole": "Full Stack Developer",
+      "hero.cardLoading": "Loading status…",
+      "about.tag": "About me",
+      "about.p1": "Mostly a <strong>frontend</strong> guy who likes building sites that are simple and actually work. Right now I'm also leveling up my <strong>backend</strong> skills.",
+      "about.p2": "In my spare time I write Lua scripts for games.",
+      "about.stackTitle": "Tools I use",
+      "about.frontend": "Frontend",
+      "about.backend": "Backend",
+      "about.scripting": "Scripting",
+      "discord.tag": "Right now",
+      "discord.title": "What I'm up to",
+      "discord.desc": "Live update straight from my Discord",
+      "discord.loading": "Loading status…",
+      "discord.add": "+ Add Friend",
+      "footer.text": "© 2026 SENZ"
+    }
+  };
+
+  function setLang(lang) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[lang][key]) el.innerHTML = translations[lang][key];
+    });
+    document.getElementById('htmlRoot').setAttribute('lang', lang);
+    document.getElementById('htmlRoot').dataset.lang = lang;
+    document.getElementById('btn-th').classList.toggle('active', lang === 'th');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    refreshStatusText();
+  }
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ===== Discord Lanyard live status =====
+  const DISCORD_USER_ID = "1005357318281641994";
+  let lastStatusData = null;
+
+  const statusMap = {
+    online:  { th: 'ออนไลน์',        en: 'Online',          cls: 'online' },
+    idle:    { th: 'ไม่อยู่',         en: 'Idle',            cls: 'idle' },
+    dnd:     { th: 'ห้ามรบกวน',      en: 'Do Not Disturb',  cls: 'dnd' },
+    offline: { th: 'ออฟไลน์',        en: 'Offline',         cls: 'offline' }
+  };
+
+  function refreshStatusText() {
+    if (!lastStatusData) return;
+    const lang = document.getElementById('htmlRoot').dataset.lang || 'th';
+    const s = statusMap[lastStatusData.discord_status] || statusMap.offline;
+    document.getElementById('discordStatus').textContent = s[lang];
+    document.getElementById('idCardStatusText').textContent = s[lang];
+  }
+
+  async function loadDiscordStatus() {
+    try {
+      const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+      const json = await res.json();
+      if (!json.success) throw new Error('lanyard not successful');
+      const data = json.data;
+      lastStatusData = data;
+      const user = data.discord_user;
+
+      // Live avatar straight from Discord CDN
+      if (user.avatar) {
+        const ext = user.avatar.startsWith('a_') ? 'gif' : 'png';
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=256`;
+        document.getElementById('discordAvatar').src = avatarUrl;
+        document.getElementById('idCardAvatar').src = avatarUrl;
+      }
+
+      // Banner is a static local file (senz.png) — not pulled live from Discord,
+      // since Discord doesn't expose banners via unauthenticated client-side calls.
+
+      // Live display name
+      const nameToShow = user.global_name || user.username;
+      document.getElementById('discordName').textContent = nameToShow;
+
+      const s = statusMap[data.discord_status] || statusMap.offline;
+      document.getElementById('statusDot').className = 'status-dot ' + s.cls;
+      document.getElementById('idCardDot').className = 'dot ' + s.cls;
+      refreshStatusText();
+
+      const activity = (data.activities || []).find(a => a.type !== 4);
+      const activityEl = document.getElementById('discordActivity');
+      if (activity) {
+        activityEl.textContent = activity.details ? `${activity.name} — ${activity.details}` : activity.name;
+      } else {
+        activityEl.textContent = '';
+      }
+    } catch (e) {
+      const lang = document.getElementById('htmlRoot').dataset.lang || 'th';
+      const fallback = lang === 'th' ? 'ไม่สามารถโหลดสถานะได้' : 'Could not load status';
+      document.getElementById('discordStatus').textContent = fallback;
+      document.getElementById('idCardStatusText').textContent = fallback;
+    }
+  }
+
+  loadDiscordStatus();
+  setInterval(loadDiscordStatus, 20000);
+
+  // ===== Extra flair =====
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+  // Scroll progress bar
+  const progressBar = document.getElementById('scrollProgress');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Animated skill bars (count up when scrolled into view)
+  function animateSkillBar(el) {
+    const target = parseInt(el.dataset.target, 10) || 0;
+    const fill = el.querySelector('.skill-bar-fill');
+    const percentEl = el.querySelector('.skill-bar-percent');
+    if (prefersReduced) {
+      fill.style.width = target + '%';
+      percentEl.textContent = target + '%';
+      return;
+    }
+    let start = null;
+    const duration = 1300;
+    function step(ts) {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur = Math.round(target * eased);
+      fill.style.width = cur + '%';
+      percentEl.textContent = cur + '%';
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const skillBars = document.querySelectorAll('.skill-bar-row');
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateSkillBar(entry.target);
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  skillBars.forEach(el => skillObserver.observe(el));
+
+  // Confetti burst on primary buttons
+  function burstConfetti(x, y) {
+    const colors = ['#A66BFF', '#F94F9E', '#8C5CE0', '#E04590'];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.style.position = 'fixed';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.width = '6px';
+      p.style.height = '6px';
+      p.style.borderRadius = '2px';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.pointerEvents = 'none';
+      p.style.zIndex = 999;
+      document.body.appendChild(p);
+      const ang = Math.random() * Math.PI * 2;
+      const dist = 60 + Math.random() * 60;
+      const dx = Math.cos(ang) * dist;
+      const dy = Math.sin(ang) * dist;
+      const anim = p.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+      ], { duration: 700 + Math.random() * 300, easing: 'cubic-bezier(.16,1,.3,1)' });
+      anim.onfinish = () => p.remove();
+    }
+  }
+  document.querySelectorAll('.btn-primary').forEach(btn => {
+    btn.addEventListener('click', e => {
+      if (prefersReduced) return;
+      burstConfetti(e.clientX, e.clientY);
+    });
+  });
+
+  // Hero particle field
+  (function () {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas || prefersReduced) { if (canvas) canvas.style.display = 'none'; return; }
+    const ctx = canvas.getContext('2d');
+    const hero = canvas.parentElement;
+    let w, h, particles;
+
+    function resize() {
+      w = canvas.width = hero.offsetWidth;
+      h = canvas.height = hero.offsetHeight;
+    }
+    function init() {
+      resize();
+      const count = Math.min(55, Math.floor(w / 24));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.6 + 0.4,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        a: Math.random() * 0.5 + 0.15,
+        hue: Math.random() > 0.5 ? '166,107,255' : '249,79,158'
+      }));
+    }
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(${p.hue},${p.a})`;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(tick);
+    }
+    init();
+    tick();
+    window.addEventListener('resize', resize);
+  })();
+
+  // Cursor glow, 3D tilt and magnetic buttons (desktop only)
+  if (!prefersReduced && isFinePointer) {
+    const glow = document.createElement('div');
+    glow.className = 'cursor-glow';
+    document.body.appendChild(glow);
+    let gx = window.innerWidth / 2, gy = window.innerHeight / 2, tx = gx, ty = gy;
+    window.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+    function glowLoop() {
+      gx += (tx - gx) * 0.12;
+      gy += (ty - gy) * 0.12;
+      glow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(glowLoop);
+    }
+    glowLoop();
+
+    function tiltCard(el, max = 8) {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        const rx = (py - 0.5) * -max;
+        const ry = (px - 0.5) * max;
+        el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    }
+    const idCard = document.getElementById('idCardLink');
+    if (idCard) tiltCard(idCard);
+
+    function magnetize(el, strength = 0.25) {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width / 2) * strength;
+        const y = (e.clientY - r.top - r.height / 2) * strength;
+        el.style.transform = `translate(${x}px, ${y}px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    }
+    document.querySelectorAll('.btn').forEach(b => magnetize(b, 0.25));
+  }
+</script>
+
+</body>
+</html>
